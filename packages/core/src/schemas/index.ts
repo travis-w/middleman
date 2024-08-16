@@ -26,12 +26,18 @@ export const LoggerOptions = z.object({
   level: LogLevel.optional()
 });
 
+export const Scenario = z.object({
+  type: z.union([z.literal('patch'), z.literal('merge')]),
+  value: z.any()
+});
+
 export const Rule = z.object({
   id: z.string(),
   disabled: z.boolean().optional(),
   name: z.string().optional(),
   type: z.string().optional(),
-  baseUrl: z.string()
+  baseUrl: z.string(),
+  scenarios: z.record(Scenario).optional()
 }).passthrough();
 
 export const HttpMethod = z.enum(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'PATCH']);
@@ -84,6 +90,7 @@ export const Config = z.object({
   logger: LoggerOptions.optional()
 });
 
+export type Scenario = z.infer<typeof Scenario>;
 export type Rule = z.infer<typeof Rule>;
 export type RuleType = z.infer<typeof RuleType>;
 export type Handler = z.infer<typeof Handler>;

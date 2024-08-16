@@ -1,3 +1,4 @@
+import { applyPatch } from 'fast-json-patch';
 import { v4 as uuid } from 'uuid';
 
 import { RestRuleType } from '../rules/index.js';
@@ -24,10 +25,18 @@ export class RuleManager {
   baseRule: Partial<Rule> = {};
   logger: Logger;
   events: EventManager;
+  scenario: string;
 
   constructor({ logger, eventManager }: RuleManagerOptions) {
     this.logger = logger;
     this.events = eventManager;
+    this.scenario = 'default';
+  }
+
+  get scenarios() {
+    return this.rules.reduce<string[]>((acc, rule) => {
+      return rule.scenarios ? [...acc, ...Object.keys(rule.scenarios)] : acc;
+    }, []).filter((v, i, a) => a.indexOf(v) === i);
   }
 
   init({ rules, baseRule }: RuleManagerInitOptions) {
@@ -95,7 +104,7 @@ export class RuleManager {
   match(request: HttpRequest) {
     this.logger.log('DEBUG', '[RuleManager]', 'match');
 
-    const rule = this.rules.find(r => {
+    let rule = this.rules.find(r => {
       const ruleType = r.type ?? this.baseRule.type ?? 'rest';
 
       const withBaseRule = this.ruleTypes[ruleType].createRule({
@@ -105,6 +114,23 @@ export class RuleManager {
 
       return !r.disabled && this.ruleTypes[ruleType].isMatch(request, withBaseRule);
     });
+
+    const scenarios = rule?.scenarios ?? {};
+
+    if (this.scenario !== 'default' && this.scenario in scenarios) {
+      const scenario = scenarios[this.scenario];
+
+      if (scenario.type == 'merge') {
+        rule = {
+          ...rule,
+          ...scenario.value
+        };
+      }
+
+      if (scenario.type == 'patch') {
+        rule = applyPatch(rule, scenario.value).newDocument;
+      }
+    }
 
     const ruleType = rule?.type ?? this.baseRule.type ?? 'rest';
 

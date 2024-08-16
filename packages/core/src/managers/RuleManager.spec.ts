@@ -271,4 +271,179 @@ describe('RuleManager', () => {
       )
     ).rejects.toThrow();
   });
+
+  it('should merge rule type with merge scenario', () => {
+    expect.assertions(2);
+
+    const ruleManager = new RuleManager({ logger, eventManager });
+    ruleManager.init({
+      rules: [{
+        path: '/cars',
+        name: 'Rule 1',
+        skipApi: true,
+        body: {
+          Hello: 'World'
+        },
+        scenarios: {
+          scenarioA: {
+            type: 'merge',
+            value: {
+              body: {
+                new: 'value'
+              }
+            }
+          }
+        }
+      }],
+      baseRule: {
+        baseUrl: ''
+      }
+    });
+
+    const req: HttpRequest = {
+      timestamp: 123,
+      requestId: 'test',
+      path: '/cars',
+      method: 'POST',
+      headers: {},
+      body: {}
+    };
+
+    // Default Scenario
+    const rule = ruleManager.match(req);
+    expect(rule.body).toEqual({ Hello: 'World' });
+
+    // Scenario A
+    ruleManager.scenario = 'scenarioA';
+    const ruleA = ruleManager.match(req);
+    expect(ruleA.body).toEqual({ new: 'value' });
+  });
+
+  it('should replace rule type with replace scenario', () => {
+    expect.assertions(2);
+
+    const ruleManager = new RuleManager({ logger, eventManager });
+    ruleManager.init({
+      rules: [{
+        path: '/cars',
+        name: 'Rule 1',
+        skipApi: true,
+        body: {
+          Hello: 'World'
+        },
+        scenarios: {
+          scenarioA: {
+            type: 'patch',
+            value: [
+              { op: 'replace', path: '/body/Hello', value: 'Test' }
+            ]
+          }
+        }
+      }],
+      baseRule: {
+        baseUrl: ''
+      }
+    });
+
+    const req: HttpRequest = {
+      timestamp: 123,
+      requestId: 'test',
+      path: '/cars',
+      method: 'POST',
+      headers: {},
+      body: {}
+    };
+
+    // Default Scenario
+    const rule = ruleManager.match(req);
+    expect(rule.body).toEqual({ Hello: 'World' });
+
+    // Scenario A
+    ruleManager.scenario = 'scenarioA';
+    const ruleA = ruleManager.match(req);
+    expect(ruleA.body).toEqual({ Hello: 'Test' });
+  });
+
+  it('should list all different scenarios', () => {
+    expect.assertions(1);
+
+    const ruleManager = new RuleManager({ logger, eventManager });
+    ruleManager.init({
+      rules: [
+        {
+          path: '/cars',
+          name: 'Rule 1',
+          skipApi: true,
+          scenarios: {
+            scenarioA: {
+              type: 'patch',
+              value: [
+                { op: 'replace', path: '/body/Hello', value: 'Test' }
+              ]
+            }
+          }
+        },
+        {
+          path: '/cars-2',
+          name: 'Rule 1',
+          skipApi: true,
+          scenarios: {
+            scenarioA: {
+              type: 'patch',
+              value: [
+                { op: 'replace', path: '/body/Hello', value: 'Test' }
+              ]
+            },
+            scenarioB: {
+              type: 'patch',
+              value: [
+                { op: 'replace', path: '/body/Hello', value: 'Test' }
+              ]
+            },
+            scenarioC: {
+              type: 'patch',
+              value: [
+                { op: 'replace', path: '/body/Hello', value: 'Test' }
+              ]
+            }
+          }
+        },
+      ],
+      baseRule: {
+        baseUrl: ''
+      }
+    });
+
+    expect(ruleManager.scenarios).toEqual(['scenarioA', 'scenarioB', 'scenarioC']);
+  });
+
+  it('should update scenarios as rules added', () => {
+    expect.assertions(2);
+
+    const ruleManager = new RuleManager({ logger, eventManager });
+    ruleManager.init({
+      rules: [],
+      baseRule: {
+        baseUrl: ''
+      }
+    });
+
+    expect(ruleManager.scenarios).toEqual([]);
+
+    ruleManager.addRules([{
+      path: '/cars',
+      name: 'Rule 1',
+      skipApi: true,
+      scenarios: {
+        scenarioA: {
+          type: 'patch',
+          value: [
+            { op: 'replace', path: '/body/Hello', value: 'Test' }
+          ]
+        }
+      }
+    }]);
+
+    expect(ruleManager.scenarios).toEqual(['scenarioA']);
+  });
 });
