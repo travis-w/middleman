@@ -12,6 +12,7 @@ import type { Handler, HijackerContext, HttpRequest, HttpResponse, Plugin, Rule,
 interface FrontendPluginOptions {
   name?: string;
   port: number;
+  devMode?: boolean;
 }
 
 export class FrontendPlugin implements Plugin {
@@ -23,6 +24,7 @@ export class FrontendPlugin implements Plugin {
   private port: number;
   private io: HijackerSocketServer;
   private tempHistory: HistoryItem[];
+  private devMode: boolean = false;
 
   constructor({ name, port }: FrontendPluginOptions) {
     this.name = name ?? 'frontend';
@@ -46,11 +48,13 @@ export class FrontendPlugin implements Plugin {
   }
 
   initPlugin({ logger, ruleManager, eventManager }: HijackerContext) {
-    this.app
-      .use('/assets', express.static(join(dirname(fileURLToPath(import.meta.url)), './frontend/assets'), { fallthrough: false,  }))
-      .get('*', (_, res) => {
-        res.sendFile(join(dirname(fileURLToPath(import.meta.url)), './frontend', 'index.html'));
-      });
+    if (!this.devMode) {
+      this.app
+        .use('/assets', express.static(join(dirname(fileURLToPath(import.meta.url)), './frontend/assets'), { fallthrough: false,  }))
+        .get('*', (_, res) => {
+          res.sendFile(join(dirname(fileURLToPath(import.meta.url)), './frontend', 'index.html'));
+        });
+    }
 
     this.io.on('connection', (socket) => {
       socket.emit('SETTINGS', {

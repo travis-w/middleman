@@ -56,6 +56,7 @@ export class Hijacker {
         try {
           res.header('Access-Control-Allow-Origin', '*');
           res.header('Access-Control-Allow-Headers', '');
+          console.log('testing');
           
           logger.log('INFO', `[${req.method}] ${req.originalUrl}`);
 

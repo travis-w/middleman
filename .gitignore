@@ -51,3 +51,4 @@ visualize.html
 
 # OS Files
 .DS_Store
+*storybook.log

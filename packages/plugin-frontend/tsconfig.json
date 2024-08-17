@@ -7,7 +7,7 @@
     "outDir": "./dist",
     "rootDir": "src"
   },
-  "include": ["src/types/*.ts", "src/*.ts", "src/integration-tests/*.spec.ts"],
+  "include": ["src/types/*.ts", "src/*.ts", "src/integration-tests/*.spec.ts", "vite.config.js"],
   "exclude": [
     "node_modules"
   ],

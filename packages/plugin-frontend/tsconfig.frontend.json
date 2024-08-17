@@ -16,5 +16,5 @@
     "isolatedModules": true,
     "jsx": "react-jsx"
   },
-  "include": ["src/frontend", "src/types", "src/frontend/.storybook/**/*"]
+  "include": ["src/frontend", "src/frontend/.storybook/**/*"]
 }

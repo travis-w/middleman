@@ -1,4 +1,4 @@
-import { applyPatch } from 'fast-json-patch';
+import { immutableJSONPatch } from 'immutable-json-patch';
 import { v4 as uuid } from 'uuid';
 
 import { RestRuleType } from '../rules/index.js';
@@ -128,7 +128,7 @@ export class RuleManager {
       }
 
       if (scenario.type == 'patch') {
-        rule = applyPatch(rule, scenario.value).newDocument;
+        rule = immutableJSONPatch(rule, scenario.value);
       }
     }
 
