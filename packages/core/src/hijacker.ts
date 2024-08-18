@@ -142,7 +142,7 @@ export class Hijacker {
     this.context.eventManager.off(eventName, cb);
   }
 
-  emit(eventName: string, val: any) {
+  emit(eventName: string, val?: any) {
     this.context.eventManager.emit(eventName, val);
   }
 

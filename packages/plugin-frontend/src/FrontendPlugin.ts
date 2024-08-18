@@ -2,9 +2,11 @@ import { Server } from 'node:http';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { createExpressMiddleware } from '@trpc/server/adapters/express';
 import express from 'express';
 import { Server as SocketServer } from 'socket.io';
 
+import { createTRPCAppRouter } from './trpc.js';
 import { HijackerSocketServer, HistoryItem } from './types/index.js';
 
 import type { Handler, HijackerContext, HttpRequest, HttpResponse, Plugin, Rule, ProcessedRule } from '@hijacker/core';
@@ -48,6 +50,13 @@ export class FrontendPlugin implements Plugin {
   }
 
   initPlugin({ logger, ruleManager, eventManager }: HijackerContext) {
+    this.app.use(
+      '/trpc',
+      createExpressMiddleware({
+        router: createTRPCAppRouter({ ruleManager })
+      }),
+    );
+
     if (!this.devMode) {
       this.app
         .use('/assets', express.static(join(dirname(fileURLToPath(import.meta.url)), './frontend/assets'), { fallthrough: false,  }))
@@ -118,5 +127,13 @@ export class FrontendPlugin implements Plugin {
     this.tempHistory = this.tempHistory.filter(x => x.requestId !== res.requestId);
 
     return res;
+  }
+
+  async close() {
+    return new Promise<void>(async (done) => {
+      this.server.close(() => {
+        done();
+      });
+    });
   }
 }

@@ -1,4 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+
+import { withoutVitePlugins } from '@storybook/builder-vite';
 import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
@@ -19,16 +21,12 @@ const config: StorybookConfig = {
     },
   },
   async viteFinal(config) {
-    const processEnv = config?.define ? config.define['process.env'] : {};
-  
-    return mergeConfig(config, {
-      define: {
-        'process.env': {
-          ...processEnv,
-          STORYBOOK_ACTIVE: true
-        }
-      }
-    });
+    // Disable hijacker plugin for storybook
+    config.plugins = await withoutVitePlugins(config.plugins, [
+      "hijacker",
+    ]);
+
+    return config;
   }
 };
 export default config;

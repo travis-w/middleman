@@ -7,24 +7,46 @@ import { FrontendPlugin } from './src/FrontendPlugin';
 
 const hijacker = (): PluginOption => {
   let hijacker: Hijacker;
-
+  let frontendPlugin: FrontendPlugin;
+ 
   return {
     name: 'hijacker',
-    buildStart() {
-      if (process.env.STORYBOOK_ACTIVE) {
-        hijacker = new Hijacker({
-          port: 1234,
-          baseRule: {
-            baseUrl: 'https://jsonplaceholder.typicode.com/'
-          },
-          rules: [],
-          plugins: [new FrontendPlugin({ port: 2000, devMode: true })]
-        });
+    
+    apply(_, { command }) {
+      if (command === 'serve') {
+        return true;
       }
+      return false;
     },
-    buildEnd() {
-      if (process.env.STORYBOOK_ACTIVE) {
-        hijacker.close();
+
+    async buildStart() {
+      frontendPlugin = new FrontendPlugin({ port: 2000, devMode: true });
+    
+      hijacker = new Hijacker({
+        port: 1234,
+        baseRule: {
+          baseUrl: 'https://jsonplaceholder.typicode.com/'
+        },
+        rules: [{
+          name: 'posts',
+          body: {
+            hello: 'world'
+          }
+        }],
+        logger: {
+          level: 'NONE'
+        },
+        plugins: [frontendPlugin]
+      });
+    },
+
+    async buildEnd() {
+      if (hijacker) {
+        await hijacker.close();
+      }
+  
+      if (frontendPlugin) {
+        await frontendPlugin.close();
       }
     }
   };
