@@ -1,18 +1,29 @@
-// import { lazy } from 'react';
-// import { RouteObject } from 'react-router-dom';
+import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router';
 
-// import { HomePage } from './pages/HomePage';
+import { Layout } from './components/Layout';
+import { History } from './pages/History';
+import { Home } from './pages/Home';
 
+const rootRoute = createRootRoute({
+  component: () => (
+    <Layout><Outlet /></Layout>
+  )
+});
 
-// const History = lazy(() => import('./pages/History'));
+const homePage = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: Home,
+});
 
-// export const routes: RouteObject[] = [
-//   {
-//     path: '/',
-//     element: <HomePage />
-//   },
-//   {
-//     path: '/history',
-//     element: <History />
-//   }
-// ];
+const historyPage = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/history',
+  component: History
+});
+
+const routeTree = rootRoute.addChildren([homePage, historyPage]);
+
+export const router = createRouter({
+  routeTree
+});

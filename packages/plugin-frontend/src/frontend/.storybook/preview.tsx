@@ -11,14 +11,18 @@ import {
 } from '@mantine/core';
 // theme.ts file from previous step
 import { theme } from '../styles/theme';
+import type { Decorator } from '@storybook/react';
+import { Layout } from '../components/Layout';
+import { RouterProvider, createMemoryHistory, createRootRoute, createRouter } from '@tanstack/react-router';
 
 const channel = addons.getChannel();
 
-function ColorSchemeWrapper({
+// Decorator to toggle between light and Dark
+const ColorSchemeWrapper = ({
   children,
 }: {
   children: React.ReactNode;
-}) {
+}) => {
   const { setColorScheme } = useMantineColorScheme();
   const handleColorScheme = (value: boolean) =>
     setColorScheme(value ? 'dark' : 'light');
@@ -31,11 +35,32 @@ function ColorSchemeWrapper({
   return <>{children}</>;
 }
 
+// Decorator to allow stories to be rendered with or without layout
+const layoutDecorator: Decorator = (Story, { parameters }) => {
+  if (parameters?.layout) {
+    return <Layout><Story /></Layout>;
+  }
+
+  return <Story />;
+}
+
+// Decorator to provide the router context (https://github.com/TanStack/router/discussions/952#discussioncomment-9952059)
+const withRouter: Decorator = (Story) => {
+  return <RouterProvider router={createRouter({
+    history: createMemoryHistory(),
+    routeTree: createRootRoute({
+      component: Story
+    })
+  })} />
+}
+
 export const decorators = [
+  layoutDecorator,
+  withRouter,
   (renderStory: any) => (
     <ColorSchemeWrapper>{renderStory()}</ColorSchemeWrapper>
   ),
   (renderStory: any) => (
     <MantineProvider theme={theme}>{renderStory()}</MantineProvider>
-  ),
+  )
 ];

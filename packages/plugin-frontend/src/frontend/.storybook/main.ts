@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
   stories: ['../**/*.mdx', '../**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -17,5 +18,17 @@ const config: StorybookConfig = {
       }
     },
   },
+  async viteFinal(config) {
+    const processEnv = config?.define ? config.define['process.env'] : {};
+  
+    return mergeConfig(config, {
+      define: {
+        'process.env': {
+          ...processEnv,
+          STORYBOOK_ACTIVE: true
+        }
+      }
+    });
+  }
 };
 export default config;
