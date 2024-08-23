@@ -40,6 +40,8 @@ export const Rule = z.object({
   scenarios: z.record(Scenario).optional()
 }).passthrough();
 
+export const ProcessedRule = Rule.partial().required({ id: true });
+
 export const HttpMethod = z.enum(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'PATCH']);
 
 export const HttpRequest = z.object({
@@ -92,6 +94,7 @@ export const Config = z.object({
 
 export type Scenario = z.infer<typeof Scenario>;
 export type Rule = z.infer<typeof Rule>;
+export type ProcessedRule = z.infer<typeof ProcessedRule>;
 export type RuleType = z.infer<typeof RuleType>;
 export type Handler = z.infer<typeof Handler>;
 export type HookGuard = z.infer<typeof HookGuard>;

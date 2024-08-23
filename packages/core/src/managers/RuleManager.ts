@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { RestRuleType } from '../rules/index.js';
 
 import type { EventManager } from './index.js';
-import type { HijackerRequest, HijackerContext, HttpRequest, HttpResponse, RuleType, Rule } from '../schemas/index.js';
+import type { HijackerRequest, HijackerContext, HttpRequest, HttpResponse, RuleType, Rule, ProcessedRule } from '../schemas/index.js';
 import type { Logger } from '../utils/index.js';
 
 interface RuleManagerInitOptions {
@@ -16,8 +16,6 @@ interface RuleManagerOptions {
   logger: Logger;
   eventManager: EventManager;
 }
-
-export type ProcessedRule = Partial<Rule> & { id: string };
 
 export class RuleManager {
   ruleTypes: Record<string, RuleType> = {};
@@ -46,7 +44,9 @@ export class RuleManager {
     this.rules = [];
     this.ruleTypes.rest = new RestRuleType();
 
-    this.addRules(rules);
+    for (const rule in rules) {
+      this.addRule(rules[rule], false);
+    }
   }
 
   addRuleTypes(ruleTypes: RuleType[]) {
@@ -57,23 +57,25 @@ export class RuleManager {
     });
   }
 
-  addRules(rules: Partial<Rule>[]) {
+  addRule(rule: Partial<Rule>, emitEvent: boolean = true) {
     this.logger.log('DEBUG', '[RuleManager]', 'addRules');
 
-    for (const rule of rules) {
-      const ruleType = rule.type ?? this.baseRule.type ?? 'rest';
-  
-      if (ruleType in this.ruleTypes === false) {
-        throw new Error(`Cannot register rule for non-existant rule type \`${ruleType}\``);
-      }
+    const ruleType = rule.type ?? this.baseRule.type ?? 'rest';
 
-      this.rules.push({
-        id: uuid(),
-        ...rule
-      });
+    if (ruleType in this.ruleTypes === false) {
+      throw new Error(`Cannot register rule for non-existant rule type \`${ruleType}\``);
     }
 
-    this.events.emit('RULES_UPDATED', this.rules);
+    const ruleWithId = {
+      id: uuid(),
+      ...rule
+    };
+
+    this.rules.push(ruleWithId);
+
+    if (emitEvent) {
+      this.events.emit('RULE_ADDED', ruleWithId);
+    }
   }
 
   updateRule(rule: ProcessedRule) {
@@ -90,7 +92,7 @@ export class RuleManager {
       ...rule
     };
 
-    this.events.emit('RULES_UPDATED', this.rules);
+    this.events.emit('RULE_UPDATED', this.rules[index]);
   }
 
   deleteRules(ids: string[]) {
@@ -98,7 +100,7 @@ export class RuleManager {
 
     this.rules = this.rules.filter(x => !ids.includes(x.id));
 
-    this.events.emit('RULES_UPDATED', this.rules);
+    this.events.emit('RULES_DELETED', { ids });
   }
 
   match(request: HttpRequest) {

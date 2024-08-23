@@ -19,13 +19,15 @@ describe('PluginManager', () => {
       logger: mockLogger,
       ruleTypes: {},
       rules: [],
+      scenario: 'default',
+      scenarios: [],
       baseRule: {
         baseUrl: ''
       },
 
       init: vi.fn(),
       addRuleTypes: vi.fn(),
-      addRules: vi.fn(),
+      addRule: vi.fn(),
       updateRule: vi.fn(),
       deleteRules: vi.fn(),
       match: vi.fn(),

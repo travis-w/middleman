@@ -196,14 +196,14 @@ describe('RuleManager', () => {
 
     expect(ruleManager.rules.length).toBe(0);
 
-    ruleManager.addRules([{
+    ruleManager.addRule({
       path: '/cars',
       name: 'Rule 1',
       skipApi: true,
       body: {
         Hello: 'World'
       }
-    }]);
+    });
 
     expect(ruleManager.rules[0].name).toBe('Rule 1');
     expect(ruleManager.rules.length).toBe(1);
@@ -221,7 +221,7 @@ describe('RuleManager', () => {
     });
 
     expect(() => {
-      ruleManager.addRules([{
+      ruleManager.addRule({
         path: '/cars',
         name: 'Rule 1',
         skipApi: true,
@@ -229,7 +229,7 @@ describe('RuleManager', () => {
           Hello: 'World'
         },
         type: 'fakeRule'
-      }]);
+      });
     }).toThrow('Cannot register rule for non-existant rule type `fakeRule`');
   });
 
@@ -430,7 +430,7 @@ describe('RuleManager', () => {
 
     expect(ruleManager.scenarios).toEqual([]);
 
-    ruleManager.addRules([{
+    ruleManager.addRule({
       path: '/cars',
       name: 'Rule 1',
       skipApi: true,
@@ -442,7 +442,7 @@ describe('RuleManager', () => {
           ]
         }
       }
-    }]);
+    });
 
     expect(ruleManager.scenarios).toEqual(['scenarioA']);
   });

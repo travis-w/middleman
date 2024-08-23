@@ -186,14 +186,17 @@ importers:
         specifier: ^1.48.1
         version: 1.48.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@trpc/server':
-        specifier: 11.0.0-rc.477
-        version: 11.0.0-rc.477
+        specifier: 11.0.0-rc.482
+        version: 11.0.0-rc.482
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
       express:
         specifier: ^4.18.2
         version: 4.18.2
-      socket.io:
-        specifier: ^4.7.2
-        version: 4.7.2
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
     devDependencies:
       '@hijacker/core':
         specifier: workspace:*
@@ -243,12 +246,24 @@ importers:
       '@storybook/test':
         specifier: ^8.2.9
         version: 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(vitest@0.34.6(sugarss@4.0.1(postcss@8.4.41))(terser@5.24.0))
+      '@tanstack/react-query':
+        specifier: ^5.51.24
+        version: 5.51.24(react@18.2.0)
       '@trpc/client':
-        specifier: 11.0.0-rc.477
-        version: 11.0.0-rc.477(@trpc/server@11.0.0-rc.477)
+        specifier: 11.0.0-rc.482
+        version: 11.0.0-rc.482(@trpc/server@11.0.0-rc.482)
+      '@trpc/react-query':
+        specifier: 11.0.0-rc.482
+        version: 11.0.0-rc.482(@tanstack/react-query@5.51.24(react@18.2.0))(@trpc/client@11.0.0-rc.482(@trpc/server@11.0.0-rc.482))(@trpc/server@11.0.0-rc.482)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       '@types/node':
         specifier: ^20.9.0
         version: 20.9.0
@@ -303,9 +318,6 @@ importers:
       rollup-plugin-visualizer:
         specifier: ^5.9.2
         version: 5.9.2(rollup@3.29.4)
-      socket.io-client:
-        specifier: ^4.7.2
-        version: 4.7.2
       storybook:
         specifier: ^8.2.9
         version: 8.2.9(@babel/preset-env@7.25.3(@babel/core@7.25.2))
@@ -2196,9 +2208,6 @@ packages:
     resolution: {integrity: sha512-Ug7x6z5lwrz0WqdnNFOMYrDQNTPAprvHLSh6+/fmml3qUiz6l5eq+2MzLKWtn/q5K5NpSiFsZTP/fck/3vjSxA==}
     engines: {node: '>=14'}
 
-  '@socket.io/component-emitter@3.1.0':
-    resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
-
   '@storybook/addon-actions@8.2.9':
     resolution: {integrity: sha512-eh2teOqjga7aoClDVV+/b1gHJqsPwjiU1t+Hg/l4i2CkaBUNdYMEL90nR6fgReOdvvL5YhcPwJ8w38f9TrQcoQ==}
     peerDependencies:
@@ -2472,6 +2481,14 @@ packages:
     resolution: {integrity: sha512-n4XXInV9irIq0obRvINIkESkGk280Q+xkIIbswmM0z9nAu2wsIRZNvlmPrtYh6bgNWtItOWWoihFUjLTW8g6Jg==}
     engines: {node: '>=12'}
 
+  '@tanstack/query-core@5.51.24':
+    resolution: {integrity: sha512-qtIR0FMHUDIWyIQw87q4C+so7XaN59MsGfWrc6rgi2VTHrVZF3Hd0St2dbpqRetHf6XW5yY5lzTrXpTilPlxUg==}
+
+  '@tanstack/react-query@5.51.24':
+    resolution: {integrity: sha512-sW1qRwoCDqOFku67xng4Y5z6NPK1DS347jR4RiX9wFHrmyqpbXgUjPIjT3fodezdJAaSJD/6CvWb0cl05J8zNQ==}
+    peerDependencies:
+      react: ^18.0.0
+
   '@tanstack/react-router@1.48.1':
     resolution: {integrity: sha512-ThEYm8zg1AD1A1ZSuOrWVDG8Lq3g2/jIggN8FpQm5zZ98PQxabR8M9pE0ioVqlYsAXEAXvjfVqLal2FL8XTzag==}
     engines: {node: '>=12'}
@@ -2519,13 +2536,22 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@trpc/client@11.0.0-rc.477':
-    resolution: {integrity: sha512-Ah/Er3vxTm2bIEUcIrike7Z/8Yc+DkFveU2ZHQQ0+zY7yxs931438+4OEJuY/Xl/0p5OTDeZTm6HBuZ1REFiyA==}
+  '@trpc/client@11.0.0-rc.482':
+    resolution: {integrity: sha512-G08bQe8zSSK6baavNTzlsGIXUuUJyRmbC7YCwIg/eYh01nah/loxh4Cg8NDtTLzOvwmUOyQaU3XcMyhywwC4/g==}
     peerDependencies:
-      '@trpc/server': 11.0.0-rc.477+a467f8314
+      '@trpc/server': 11.0.0-rc.482+930e652bf
 
-  '@trpc/server@11.0.0-rc.477':
-    resolution: {integrity: sha512-K6zmjRv96fWilqm/ETehEK1DWsy5bSyrs2xbsNzCbjguMgamMhOClRHgYzJcwgLp2kasJ7QgD9YbahOhV1/u1w==}
+  '@trpc/react-query@11.0.0-rc.482':
+    resolution: {integrity: sha512-pmXStCkoxs7AJoP8oM9hnEXoYYYQbp/5kbA507R4Hd/P2tniBFe6aKFg4bXqeV+bWOi7qPNGSa5+IDH64WPRBg==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.49.2
+      '@trpc/client': 11.0.0-rc.482+930e652bf
+      '@trpc/server': 11.0.0-rc.482+930e652bf
+      react: '>=18.2.0'
+      react-dom: '>=18.2.0'
+
+  '@trpc/server@11.0.0-rc.482':
+    resolution: {integrity: sha512-6Wq3T9V6B6Tv63qLV6qc2rt71AyrwBgzGniywMeddy1k2U2h6O9u7aVopzIpJJsNd7XqheYq830tU4VENysJjQ==}
 
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
@@ -2567,11 +2593,8 @@ packages:
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
-  '@types/cookie@0.4.1':
-    resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
-
-  '@types/cors@2.8.16':
-    resolution: {integrity: sha512-Trx5or1Nyg1Fq138PCuWqoApzvoSLWzZ25ORBiHMbbUT42g578lH1GT4TwYDbiUOLFuDsCkfLneT2105fsFWGg==}
+  '@types/cors@2.8.17':
+    resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
 
   '@types/cross-spawn@6.0.6':
     resolution: {integrity: sha512-fXRhhUkG4H3TQk5dBhQ7m/JDdSNHKwR2BBia62lhwEIq9xGiQKLxd6LymNhn47SjXhsUEPmxi+PKw2OkW4LLjA==}
@@ -2656,6 +2679,9 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  '@types/lodash-es@4.17.12':
+    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
 
   '@types/lodash@4.17.7':
     resolution: {integrity: sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==}
@@ -3224,10 +3250,6 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  base64id@2.0.0:
-    resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
-    engines: {node: ^4.5.0 || >= 5.9}
-
   batch@0.6.1:
     resolution: {integrity: sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw==}
 
@@ -3620,10 +3642,6 @@ packages:
 
   cookie-signature@1.0.6:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
-
-  cookie@0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
-    engines: {node: '>= 0.6'}
 
   cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
@@ -4042,17 +4060,6 @@ packages:
   encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
     engines: {node: '>= 0.8'}
-
-  engine.io-client@6.5.3:
-    resolution: {integrity: sha512-9Z0qLB0NIisTRt1DZ/8U2k12RJn8yls/nXMZLn+/N8hANT3TcYjKFKcwbw5zFQiN4NTde3TSY9zb79e1ij6j9Q==}
-
-  engine.io-parser@5.2.1:
-    resolution: {integrity: sha512-9JktcM3u18nU9N2Lz3bWeBgxVgOKpw7yhRaoxQA3FUDZzzw+9WlA6p4G4u0RixNkg14fH7EfEc/RhpurtiROTQ==}
-    engines: {node: '>=10.0.0'}
-
-  engine.io@6.5.4:
-    resolution: {integrity: sha512-KdVSDKhVKyOi+r5uEabrDLZw2qXStVvCsEB/LN3mw4WFi6Gx50jTyuxYVCwAAC0U46FdnzP/ScKRBTXb/NiEOg==}
-    engines: {node: '>=10.2.0'}
 
   enhanced-resolve@5.15.0:
     resolution: {integrity: sha512-LXYT42KJ7lpIKECr2mAXIaMldcNCh/7E0KBKOu4KSfkHmP+mZmSs+8V5gBAqisWBy0OO4W5Oyys0GO1Y8KtdKg==}
@@ -7142,21 +7149,6 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  socket.io-adapter@2.5.2:
-    resolution: {integrity: sha512-87C3LO/NOMc+eMcpcxUBebGjkpMDkNBS9tf7KJqcDsmL936EChtVva71Dw2q4tQcuVC+hAUy4an2NO/sYXmwRA==}
-
-  socket.io-client@4.7.2:
-    resolution: {integrity: sha512-vtA0uD4ibrYD793SOIAwlo8cj6haOeMHrGvwPxJsxH7CeIksqJ+3Zc06RvWTIFgiSqx4A3sOnTXpfAEE2Zyz6w==}
-    engines: {node: '>=10.0.0'}
-
-  socket.io-parser@4.2.4:
-    resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
-    engines: {node: '>=10.0.0'}
-
-  socket.io@4.7.2:
-    resolution: {integrity: sha512-bvKVS29/I5fl2FGLNHuXlQaUH/BlzX1IN6S+NKLNZpBsPZIDH+90eQmCs2Railn4YUiww4SzUedJ6+uzwFnKLw==}
-    engines: {node: '>=10.2.0'}
-
   sockjs@0.3.24:
     resolution: {integrity: sha512-GJgLTZ7vYb/JtPSSZ10hsOYIvEYsjbNU+zPdIHcUaWVNUEPivzxku31865sSSud0Da0W4lEeOPlmw93zLQchuQ==}
 
@@ -8017,18 +8009,6 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.11.0:
-    resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
   ws@8.14.2:
     resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
     engines: {node: '>=10.0.0'}
@@ -8056,10 +8036,6 @@ packages:
   xmlbuilder@11.0.1:
     resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
     engines: {node: '>=4.0'}
-
-  xmlhttprequest-ssl@2.0.0:
-    resolution: {integrity: sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==}
-    engines: {node: '>=0.4.0'}
 
   y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}
@@ -11102,8 +11078,6 @@ snapshots:
       p-map: 4.0.0
       webpack-sources: 3.2.3
 
-  '@socket.io/component-emitter@3.1.0': {}
-
   '@storybook/addon-actions@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.3(@babel/core@7.25.2)))':
     dependencies:
       '@storybook/global': 5.0.0
@@ -11513,6 +11487,13 @@ snapshots:
 
   '@tanstack/history@1.45.3': {}
 
+  '@tanstack/query-core@5.51.24': {}
+
+  '@tanstack/react-query@5.51.24(react@18.2.0)':
+    dependencies:
+      '@tanstack/query-core': 5.51.24
+      react: 18.2.0
+
   '@tanstack/react-router@1.48.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@tanstack/history': 1.45.3
@@ -11559,11 +11540,19 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.1.0
 
-  '@trpc/client@11.0.0-rc.477(@trpc/server@11.0.0-rc.477)':
+  '@trpc/client@11.0.0-rc.482(@trpc/server@11.0.0-rc.482)':
     dependencies:
-      '@trpc/server': 11.0.0-rc.477
+      '@trpc/server': 11.0.0-rc.482
 
-  '@trpc/server@11.0.0-rc.477': {}
+  '@trpc/react-query@11.0.0-rc.482(@tanstack/react-query@5.51.24(react@18.2.0))(@trpc/client@11.0.0-rc.482(@trpc/server@11.0.0-rc.482))(@trpc/server@11.0.0-rc.482)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@tanstack/react-query': 5.51.24(react@18.2.0)
+      '@trpc/client': 11.0.0-rc.482(@trpc/server@11.0.0-rc.482)
+      '@trpc/server': 11.0.0-rc.482
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  '@trpc/server@11.0.0-rc.482': {}
 
   '@trysound/sax@0.2.0': {}
 
@@ -11618,9 +11607,7 @@ snapshots:
     dependencies:
       '@types/node': 20.9.0
 
-  '@types/cookie@0.4.1': {}
-
-  '@types/cors@2.8.16':
+  '@types/cors@2.8.17':
     dependencies:
       '@types/node': 20.9.0
 
@@ -11717,6 +11704,10 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
+
+  '@types/lodash-es@4.17.12':
+    dependencies:
+      '@types/lodash': 4.17.7
 
   '@types/lodash@4.17.7': {}
 
@@ -12419,8 +12410,6 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  base64id@2.0.0: {}
-
   batch@0.6.1: {}
 
   better-path-resolve@1.0.0:
@@ -12875,8 +12864,6 @@ snapshots:
 
   cookie-signature@1.0.6: {}
 
-  cookie@0.4.2: {}
-
   cookie@0.5.0: {}
 
   cookie@0.6.0: {}
@@ -13316,37 +13303,6 @@ snapshots:
   emoticon@4.0.1: {}
 
   encodeurl@1.0.2: {}
-
-  engine.io-client@6.5.3:
-    dependencies:
-      '@socket.io/component-emitter': 3.1.0
-      debug: 4.3.4
-      engine.io-parser: 5.2.1
-      ws: 8.11.0
-      xmlhttprequest-ssl: 2.0.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
-  engine.io-parser@5.2.1: {}
-
-  engine.io@6.5.4:
-    dependencies:
-      '@types/cookie': 0.4.1
-      '@types/cors': 2.8.16
-      '@types/node': 20.9.0
-      accepts: 1.3.8
-      base64id: 2.0.0
-      cookie: 0.4.2
-      cors: 2.8.5
-      debug: 4.3.4
-      engine.io-parser: 5.2.1
-      ws: 8.11.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
 
   enhanced-resolve@5.15.0:
     dependencies:
@@ -17132,45 +17088,6 @@ snapshots:
       wcwidth: 1.0.1
       yargs: 15.4.1
 
-  socket.io-adapter@2.5.2:
-    dependencies:
-      ws: 8.11.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  socket.io-client@4.7.2:
-    dependencies:
-      '@socket.io/component-emitter': 3.1.0
-      debug: 4.3.4
-      engine.io-client: 6.5.3
-      socket.io-parser: 4.2.4
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
-  socket.io-parser@4.2.4:
-    dependencies:
-      '@socket.io/component-emitter': 3.1.0
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
-
-  socket.io@4.7.2:
-    dependencies:
-      accepts: 1.3.8
-      base64id: 2.0.0
-      cors: 2.8.5
-      debug: 4.3.4
-      engine.io: 6.5.4
-      socket.io-adapter: 2.5.2
-      socket.io-parser: 4.2.4
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
   sockjs@0.3.24:
     dependencies:
       faye-websocket: 0.11.4
@@ -18144,8 +18061,6 @@ snapshots:
 
   ws@7.5.9: {}
 
-  ws@8.11.0: {}
-
   ws@8.14.2: {}
 
   xdg-basedir@5.1.0: {}
@@ -18160,8 +18075,6 @@ snapshots:
       xmlbuilder: 11.0.1
 
   xmlbuilder@11.0.1: {}
-
-  xmlhttprequest-ssl@2.0.0: {}
 
   y18n@4.0.3: {}
 

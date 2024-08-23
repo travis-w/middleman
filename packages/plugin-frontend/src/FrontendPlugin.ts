@@ -3,13 +3,13 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { createExpressMiddleware } from '@trpc/server/adapters/express';
+import cors from 'cors';
 import express from 'express';
-import { Server as SocketServer } from 'socket.io';
 
 import { createTRPCAppRouter } from './trpc.js';
-import { HijackerSocketServer, HistoryItem } from './types/index.js';
+import { HistoryItem } from './types/index.js';
 
-import type { Handler, HijackerContext, HttpRequest, HttpResponse, Plugin, Rule, ProcessedRule } from '@hijacker/core';
+import type { Handler, HijackerContext, HttpRequest, HttpResponse, Plugin } from '@hijacker/core';
 
 interface FrontendPluginOptions {
   name?: string;
@@ -24,22 +24,16 @@ export class FrontendPlugin implements Plugin {
   private app: express.Application;
   private server: Server;
   private port: number;
-  private io: HijackerSocketServer;
   private tempHistory: HistoryItem[];
-  private devMode: boolean = false;
+  private devMode: boolean;
 
-  constructor({ name, port }: FrontendPluginOptions) {
+  constructor({ name, port, devMode }: FrontendPluginOptions) {
     this.name = name ?? 'frontend';
+    this.devMode = devMode ?? false;
     
     this.port = port;
     this.app = express();
     this.server = new Server(this.app);
-    this.io = new SocketServer(this.server, {
-      maxHttpBufferSize: 1e8,
-      cors: {
-        origin: true
-      }
-    });
     this.tempHistory = [];
 
     // Register handlers
@@ -47,13 +41,17 @@ export class FrontendPlugin implements Plugin {
       HIJACKER_REQUEST: this.onHijackerRequest.bind(this),
       HIJACKER_RESPONSE: this.onHijackerResponse.bind(this)
     };
+
+    if (this.devMode) {
+      this.app.use(cors());
+    }
   }
 
   initPlugin({ logger, ruleManager, eventManager }: HijackerContext) {
     this.app.use(
       '/trpc',
       createExpressMiddleware({
-        router: createTRPCAppRouter({ ruleManager })
+        router: createTRPCAppRouter({ ruleManager, eventManager })
       }),
     );
 
@@ -64,35 +62,6 @@ export class FrontendPlugin implements Plugin {
           res.sendFile(join(dirname(fileURLToPath(import.meta.url)), './frontend', 'index.html'));
         });
     }
-
-    this.io.on('connection', (socket) => {
-      socket.emit('SETTINGS', {
-        port: 123,
-        baseRule: ruleManager.baseRule,
-        rules: ruleManager.rules
-      });
-
-      socket.on('UPDATE_BASE_RULE', (rule: Partial<Rule>) => {
-        ruleManager.baseRule = rule;
-        this.io.emit('BASE_RULE_UPDATED', rule);
-      });
-
-      socket.on('UPDATE_RULES', (rules: ProcessedRule[]) => {
-        rules.forEach((rule) => ruleManager.updateRule(rule));
-      });
-
-      socket.on('ADD_RULES', (rules: Partial<Rule>[]) => {
-        ruleManager.addRules(rules);
-      });
-
-      socket.on('DELETE_RULES', (ids: string[]) => {
-        ruleManager.deleteRules(ids);
-      });
-    });
-
-    eventManager.on('RULES_UPDATED', (rules) => {
-      this.io.emit('RULES_UPDATED', rules);
-    });
     
     this.server.listen(this.port, () => {
       logger.log('INFO', `[Frontend] Frontend listening on port: ${this.port}`);
@@ -109,7 +78,8 @@ export class FrontendPlugin implements Plugin {
       hijackerRequest: req
     };
 
-    this.io.emit('HISTORY_EVENT', historyItem);
+    // TODO: Need to make this work with TRPC
+    // this.io.emit('HISTORY_EVENT', historyItem);
 
     this.tempHistory.push(historyItem);
 
@@ -121,7 +91,8 @@ export class FrontendPlugin implements Plugin {
 
     historyItem.hijackerResponse = res;
 
-    this.io.emit('HISTORY_EVENT', historyItem);
+    // TODO: Need to make this work with TRPC
+    // this.io.emit('HISTORY_EVENT', historyItem);
   
     // Remove from temp history after request is finished
     this.tempHistory = this.tempHistory.filter(x => x.requestId !== res.requestId);
@@ -131,6 +102,7 @@ export class FrontendPlugin implements Plugin {
 
   async close() {
     return new Promise<void>(async (done) => {
+      this.server.closeAllConnections();
       this.server.close(() => {
         done();
       });

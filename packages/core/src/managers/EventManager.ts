@@ -8,7 +8,7 @@ interface EventManagerOptions {
 
 // Wrapper for events.  Will eventually keep track of registered events.
 export class EventManager {
-  private events: EventEmitter;
+  events: EventEmitter;
   private logger: Logger;
 
   constructor({ logger }: EventManagerOptions) {
