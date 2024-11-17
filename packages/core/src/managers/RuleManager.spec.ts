@@ -139,7 +139,7 @@ describe('RuleManager', () => {
 
     expect(ruleManager.rules.length).toBe(2);
 
-    ruleManager.deleteRules([ruleManager.rules[0].id]);
+    ruleManager.deleteRule(ruleManager.rules[0].id);
 
     expect(ruleManager.rules.length).toBe(1);
     expect(ruleManager.rules[0].name).toBe('Rule 2');

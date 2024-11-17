@@ -21,6 +21,11 @@ export const createTRPCAppRouter = ({ ruleManager, eventManager }: TRPCServerOpt
         yield rule as ProcessedRule;
       }
     }),
+    onRuleDeleted: t.procedure.subscription(async function* () {
+      for await (const [rule] of on(eventManager.events, 'RULE_DELETED')) {
+        yield rule as Pick<Rule, 'id'>;
+      }
+    }),
     addRule: t.procedure
       .input(Rule.partial()).mutation((opts) => {
         ruleManager.addRule(opts.input);
@@ -36,6 +41,10 @@ export const createTRPCAppRouter = ({ ruleManager, eventManager }: TRPCServerOpt
             message: 'There was an error updating the rule'
           });
         }
+      }),
+    deleteRule: t.procedure
+      .input(Rule.pick({ id: true })).mutation((opts) => {
+        ruleManager.deleteRule(opts.input.id);
       }),
     setActiveScenario: t.procedure
       .input(z.string()).mutation((opts) => {

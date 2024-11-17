@@ -58,7 +58,7 @@ export class RuleManager {
   }
 
   addRule(rule: Partial<Rule>, emitEvent: boolean = true) {
-    this.logger.log('DEBUG', '[RuleManager]', 'addRules');
+    this.logger.log('DEBUG', '[RuleManager]', 'addRule');
 
     const ruleType = rule.type ?? this.baseRule.type ?? 'rest';
 
@@ -79,7 +79,7 @@ export class RuleManager {
   }
 
   updateRule(rule: ProcessedRule) {
-    this.logger.log('DEBUG', '[RuleManager]', 'updateRules');
+    this.logger.log('DEBUG', '[RuleManager]', 'updateRule');
 
     const index = this.rules.findIndex(x => x.id === rule.id);
     const ruleType = rule.type ?? this.baseRule.type ?? 'rest';
@@ -95,12 +95,12 @@ export class RuleManager {
     this.events.emit('RULE_UPDATED', this.rules[index]);
   }
 
-  deleteRules(ids: string[]) {
-    this.logger.log('DEBUG', '[RuleManager]', 'deleteRules');
+  deleteRule(id: string) {
+    this.logger.log('DEBUG', '[RuleManager]', 'deleteRule');
 
-    this.rules = this.rules.filter(x => !ids.includes(x.id));
+    this.rules = this.rules.filter(x => id !== x.id);
 
-    this.events.emit('RULES_DELETED', { ids });
+    this.events.emit('RULE_DELETED', { id });
   }
 
   match(request: HttpRequest) {

@@ -1,4 +1,4 @@
-import { AppShell, Burger, NavLink } from '@mantine/core';
+import { AppShell, Burger, Flex, NavLink, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link } from '@tanstack/react-router';
 import { ReactNode } from 'react';
@@ -21,13 +21,15 @@ export const Layout = ({ children }: LayoutProps) => {
       padding="md"
     >
       <AppShell.Header>
-        <Burger
-          opened={opened}
-          onClick={toggle}
-          hiddenFrom="sm"
-          size="sm"
-        />
-        <div>Logo</div>
+        <Flex h="100%" align="center" gap="sm" p="sm">
+          <Burger
+            opened={opened}
+            onClick={toggle}
+            hiddenFrom="sm"
+            size="sm"
+          />
+          <Title size="1.5rem">Hijacker</Title>
+        </Flex>
       </AppShell.Header>
 
       <AppShell.Navbar p="md">

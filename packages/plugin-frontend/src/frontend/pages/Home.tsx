@@ -25,6 +25,14 @@ export const Home = () => {
     }
   });
 
+  trpc.onRuleDeleted.useSubscription(undefined, {
+    onData: (data) => {
+      setRules((prev) => {
+        return prev.filter((r) => r.id !== data.id);
+      });
+    }
+  });
+
   useEffect(() => {
     setRules(data ?? []);
   }, [data, setRules]);

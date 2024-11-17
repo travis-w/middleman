@@ -33,13 +33,22 @@ const hijacker = ({ hijackerPort, frontendPort } : HijackerPluginOptions): Plugi
         baseRule: {
           baseUrl: 'https://jsonplaceholder.typicode.com/'
         },
-        rules: [{
-          name: 'posts',
-          path: '/posts',
-          body: {
-            hello: 'world'
+        rules: [
+          {
+            name: 'posts',
+            path: '/posts',
+            body: {
+              hello: 'world'
+            }
+          },
+          {
+            name: 'posts',
+            path: '/posts',
+            body: {
+              hello: 'world'
+            }
           }
-        }],
+        ],
         logger: {
           level: 'NONE'
         },

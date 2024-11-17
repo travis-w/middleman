@@ -29,7 +29,7 @@ describe('PluginManager', () => {
       addRuleTypes: vi.fn(),
       addRule: vi.fn(),
       updateRule: vi.fn(),
-      deleteRules: vi.fn(),
+      deleteRule: vi.fn(),
       match: vi.fn(),
       handler: vi.fn(),
       events: {
